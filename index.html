@@ -28,6 +28,7 @@
     padding:14px 18px 8px; flex-shrink:0;
   }
   .brand{display:flex; align-items:center; gap:9px;}
+  .brand .logo{display:block;}
   .brand .name{font-size:19px; font-weight:600; letter-spacing:-.02em;}
   .hicons{display:flex; gap:6px;}
   .iconbtn{
@@ -162,12 +163,19 @@
 <div class="phone">
   <header>
     <div class="brand">
-      <!-- logo chat — variante A (trait), modifiable -->
-      <svg width="27" height="27" viewBox="0 0 32 32" fill="none" stroke="#0B0B0C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-label="KAT">
-        <path d="M8.6 12.4 7.2 5.6 13 10.4c1.9-.5 4.1-.5 6 0l5.8-4.8-1.4 6.8c1.6 3.4.6 7.4-2.9 9.9-2.5 1.7-6.5 1.7-9 0-3.5-2.5-4.5-6.5-2.9-9.9Z"/>
-        <circle cx="12.8" cy="16.2" r=".7" fill="#0B0B0C" stroke="none"/>
-        <circle cx="19.2" cy="16.2" r=".7" fill="#0B0B0C" stroke="none"/>
-        <path d="M16 18.1v1.1"/><path d="M14.7 20c.8.6 1.8.6 2.6 0"/>
+      <!-- logo chat — bascule jour/nuit (jour 06-18h : chat noir plein · nuit 18-06h : chat contour) -->
+      <img class="logo" id="logoDay" src="day-cat.png?v=1" alt="kat" width="28" height="30">
+      <svg class="logo" id="logoNight" viewBox="13 18 90 72" width="35" height="28" fill="none" stroke="#0B0B0C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-label="kat" style="display:none">
+        <path d="M33 82 C25 78 26 52 30 40 C34 26 52 21 66 29 C77 35 79 46 77 55"/>
+        <path d="M31 45 C21 41 17 28 23 22 C26 19 31 21 31 25"/>
+        <path d="M33 82 C42 88 60 88 74 83"/>
+        <path d="M77 55 C66 54 60 63 62 71 C64 79 74 81 82 78 C90 75 92 65 88 59 C86 55 81 54 77 55"/>
+        <path d="M67 57 L65 49 L72 54"/><path d="M83 55 L89 49 L90 57"/>
+        <path d="M80 79 C86 83 96 82 100 77"/>
+        <path d="M68 65.5 q2.4 2 4.8 0" stroke-width="2.2"/>
+        <path d="M78 65.5 q2.4 2 4.8 0" stroke-width="2.2"/>
+        <path d="M72.2 71.5 q1.8 1.4 3.6 0" stroke-width="2"/>
+        <path d="M75 68.5 l-1.4 2.3 h2.8 z" fill="#0B0B0C" stroke="none"/>
       </svg>
       <span class="name">kat</span>
     </div>
@@ -390,6 +398,17 @@
   // placé en fin de script : toutes les déclarations (map, initMap) existent désormais.
   if(location.hash) goTo(location.hash.slice(1));
   window.addEventListener('hashchange',()=>goTo(location.hash.slice(1)));
+
+  // ---------- Logo jour / nuit ----------
+  // Jour 06h–18h : chat noir plein. Nuit 18h–06h : chat contour.
+  // Override pour la preview : ?logo=night ou ?logo=day (sinon = heure locale).
+  (function(){
+    const force=new URLSearchParams(location.search).get('logo');
+    const h=new Date().getHours();
+    const night = force ? (force==='night') : (h>=18 || h<6);
+    const d=document.getElementById('logoDay'), n=document.getElementById('logoNight');
+    if(d&&n){ d.style.display=night?'none':'block'; n.style.display=night?'block':'none'; }
+  })();
 </script>
 </body>
 </html>

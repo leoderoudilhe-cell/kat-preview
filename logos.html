@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FFFFFF">
-<title>KAT — logo, 3 pistes</title>
+<title>KAT — logo jour / nuit</title>
 <style>
-  :root{--bg:#FFFFFF;--ink:#0B0B0C;--t2:#6B6B70;--t3:#B0B0B5;--line:rgba(0,0,0,.10);--grey:#8A8A8E;}
+  :root{--bg:#FFFFFF;--ink:#0B0B0C;--t2:#6B6B70;--t3:#B0B0B5;--line:rgba(0,0,0,.10);}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;background:#EDEDED;}
   body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;color:var(--ink);line-height:1.45;-webkit-font-smoothing:antialiased;}
@@ -14,16 +14,15 @@
   h1{font-size:22px;font-weight:600;letter-spacing:-.02em;margin:0 0 4px;}
   .lede{color:var(--t2);font-size:14px;margin:0 0 26px;}
   .card{border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:18px;}
-  .card .head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;}
-  .card .nm{font-size:15px;font-weight:600;}
-  .card .tag{font-size:12px;color:var(--t3);}
+  .head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;}
+  .nm{font-size:15px;font-weight:600;}
+  .tag{font-size:12px;color:var(--t3);}
   .specimens{display:flex;align-items:center;gap:26px;flex-wrap:wrap;}
   .spec{display:flex;flex-direction:column;align-items:center;gap:7px;}
-  .spec .cap{font-size:11px;color:var(--t3);}
+  .cap{font-size:11px;color:var(--t3);}
   .chip{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:12px;padding:8px 14px;}
-  .chip .nme{font-size:17px;font-weight:600;letter-spacing:-.02em;}
+  .nme{font-size:17px;font-weight:600;letter-spacing:-.02em;}
   .appicon{width:60px;height:60px;border-radius:14px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;}
-  .appicon.dark{background:var(--ink);border-color:var(--ink);}
   svg{display:block;}
   .desc{color:var(--t2);font-size:13px;margin-top:16px;line-height:1.5;}
   .foot{color:var(--t3);font-size:12px;text-align:center;margin-top:26px;}
@@ -31,132 +30,60 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>KAT — logo, 3 pistes</h1>
-  <p class="lede">Vrai chat reconnaissable · line-art noir / gris · fond blanc · formes arrondies · regard neutre. Choisis-en une (ou dis ce qu'on ajuste).</p>
+  <h1>KAT — logo jour / nuit</h1>
+  <p class="lede">Le logo de l'app change selon l'heure : <b>chat noir le jour (6h–18h)</b>, <b>chat contour la nuit (18h–6h)</b>. (Dans l'app, l'aperçu force un thème avec <code>?logo=day</code> / <code>?logo=night</code>.)</p>
 
-  <!-- VARIANTE A -->
+  <!-- JOUR -->
   <div class="card">
-    <div class="head"><span class="nm">A — Trait</span><span class="tag">line-art, contour fin</span></div>
+    <div class="head"><span class="nm">Jour · 06h → 18h</span><span class="tag">chat noir plein</span></div>
+    <div class="specimens">
+      <div class="spec"><img src="day-cat.png?v=1" width="76" alt="chat jour"><span class="cap">logo</span></div>
+      <div class="spec"><div class="chip"><img src="day-cat.png?v=1" width="26" alt="chat jour"><span class="nme">kat</span></div><span class="cap">dans le header</span></div>
+      <div class="spec"><div class="appicon"><img src="day-cat.png?v=1" width="38" alt="chat jour"></div><span class="cap">icône app</span></div>
+    </div>
+    <p class="desc">Ton chat noir, repris tel quel.</p>
+  </div>
+
+  <!-- NUIT -->
+  <div class="card">
+    <div class="head"><span class="nm">Nuit · 18h → 06h</span><span class="tag">chat contour, endormi</span></div>
     <div class="specimens">
       <div class="spec">
-        <svg width="76" height="76" viewBox="0 0 32 32" fill="none" stroke="#0B0B0C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M8.6 12.4 7.2 5.6 13 10.4c1.9-.5 4.1-.5 6 0l5.8-4.8-1.4 6.8c1.6 3.4.6 7.4-2.9 9.9-2.5 1.7-6.5 1.7-9 0-3.5-2.5-4.5-6.5-2.9-9.9Z"/>
-          <circle cx="12.8" cy="16.2" r=".55" fill="#0B0B0C" stroke="none"/>
-          <circle cx="19.2" cy="16.2" r=".55" fill="#0B0B0C" stroke="none"/>
-          <path d="M16 18.1v1.1"/>
-          <path d="M14.7 20c.8.6 1.8.6 2.6 0"/>
-          <path d="M17.4 18.7 22 17.7M17.4 19.8 22 20.4M14.6 18.7 10 17.7M14.6 19.8 10 20.4" stroke-width="1" opacity=".55"/>
-        </svg>
-        <span class="cap">76 px</span>
+        <svg width="92" height="74" viewBox="13 18 90 72" fill="none" stroke="#0B0B0C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M33 82 C25 78 26 52 30 40 C34 26 52 21 66 29 C77 35 79 46 77 55"/>
+          <path d="M31 45 C21 41 17 28 23 22 C26 19 31 21 31 25"/>
+          <path d="M33 82 C42 88 60 88 74 83"/>
+          <path d="M77 55 C66 54 60 63 62 71 C64 79 74 81 82 78 C90 75 92 65 88 59 C86 55 81 54 77 55"/>
+          <path d="M67 57 L65 49 L72 54"/><path d="M83 55 L89 49 L90 57"/>
+          <path d="M80 79 C86 83 96 82 100 77"/>
+          <path d="M68 65.5 q2.4 2 4.8 0" stroke-width="2.2"/>
+          <path d="M78 65.5 q2.4 2 4.8 0" stroke-width="2.2"/>
+          <path d="M72.2 71.5 q1.8 1.4 3.6 0" stroke-width="2"/>
+          <path d="M75 68.5 l-1.4 2.3 h2.8 z" fill="#0B0B0C" stroke="none"/>
+        </svg><span class="cap">logo</span>
       </div>
       <div class="spec">
         <div class="chip">
-          <svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="#0B0B0C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M8.6 12.4 7.2 5.6 13 10.4c1.9-.5 4.1-.5 6 0l5.8-4.8-1.4 6.8c1.6 3.4.6 7.4-2.9 9.9-2.5 1.7-6.5 1.7-9 0-3.5-2.5-4.5-6.5-2.9-9.9Z"/>
-            <circle cx="12.8" cy="16.2" r=".7" fill="#0B0B0C" stroke="none"/>
-            <circle cx="19.2" cy="16.2" r=".7" fill="#0B0B0C" stroke="none"/>
-            <path d="M16 18.1v1.1"/><path d="M14.7 20c.8.6 1.8.6 2.6 0"/>
+          <svg width="34" height="27" viewBox="13 18 90 72" fill="none" stroke="#0B0B0C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M33 82 C25 78 26 52 30 40 C34 26 52 21 66 29 C77 35 79 46 77 55"/>
+            <path d="M31 45 C21 41 17 28 23 22 C26 19 31 21 31 25"/>
+            <path d="M33 82 C42 88 60 88 74 83"/>
+            <path d="M77 55 C66 54 60 63 62 71 C64 79 74 81 82 78 C90 75 92 65 88 59 C86 55 81 54 77 55"/>
+            <path d="M67 57 L65 49 L72 54"/><path d="M83 55 L89 49 L90 57"/>
+            <path d="M80 79 C86 83 96 82 100 77"/>
+            <path d="M68 65.5 q2.4 2 4.8 0" stroke-width="2.2"/>
+            <path d="M78 65.5 q2.4 2 4.8 0" stroke-width="2.2"/>
+            <path d="M72.2 71.5 q1.8 1.4 3.6 0" stroke-width="2"/>
+            <path d="M75 68.5 l-1.4 2.3 h2.8 z" fill="#0B0B0C" stroke="none"/>
           </svg>
           <span class="nme">kat</span>
-        </div>
-        <span class="cap">dans le header</span>
-      </div>
-      <div class="spec">
-        <div class="appicon">
-          <svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke="#0B0B0C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M8.6 12.4 7.2 5.6 13 10.4c1.9-.5 4.1-.5 6 0l5.8-4.8-1.4 6.8c1.6 3.4.6 7.4-2.9 9.9-2.5 1.7-6.5 1.7-9 0-3.5-2.5-4.5-6.5-2.9-9.9Z"/>
-            <circle cx="12.8" cy="16.2" r=".6" fill="#0B0B0C" stroke="none"/>
-            <circle cx="19.2" cy="16.2" r=".6" fill="#0B0B0C" stroke="none"/>
-            <path d="M16 18.1v1.1"/><path d="M14.7 20c.8.6 1.8.6 2.6 0"/>
-          </svg>
-        </div>
-        <span class="cap">icône app</span>
+        </div><span class="cap">dans le header</span>
       </div>
     </div>
-    <p class="desc">Le plus cohérent avec l'interface (tout est en traits fins). Tête arrondie, deux oreilles, museau + moustaches discrètes. Premium et léger.</p>
+    <p class="desc">Recréé fidèlement en vectoriel d'après ton dessin (line-art, net à toutes les tailles). Si tu veux la version pixel-exacte de ton image, dépose-la dans <code>~/Downloads</code> et je la remplace.</p>
   </div>
 
-  <!-- VARIANTE B -->
-  <div class="card">
-    <div class="head"><span class="nm">B — Plein</span><span class="tag">silhouette, yeux en réserve</span></div>
-    <div class="specimens">
-      <div class="spec">
-        <svg width="76" height="76" viewBox="0 0 32 32">
-          <path d="M8.6 12.4 7.2 5.6 13 10.4c1.9-.5 4.1-.5 6 0l5.8-4.8-1.4 6.8c1.6 3.4.6 7.4-2.9 9.9-2.5 1.7-6.5 1.7-9 0-3.5-2.5-4.5-6.5-2.9-9.9Z" fill="#0B0B0C"/>
-          <path d="M11.7 16.4c0-.7.5-1.2 1.1-1.2s1.1.5 1.1 1.2" fill="none" stroke="#fff" stroke-width="1.1" stroke-linecap="round"/>
-          <path d="M18.1 16.4c0-.7.5-1.2 1.1-1.2s1.1.5 1.1 1.2" fill="none" stroke="#fff" stroke-width="1.1" stroke-linecap="round"/>
-          <path d="M14.9 18.9c.7.5 1.5.5 2.2 0" fill="none" stroke="#fff" stroke-width="1.1" stroke-linecap="round"/>
-        </svg>
-        <span class="cap">76 px</span>
-      </div>
-      <div class="spec">
-        <div class="chip">
-          <svg width="26" height="26" viewBox="0 0 32 32">
-            <path d="M8.6 12.4 7.2 5.6 13 10.4c1.9-.5 4.1-.5 6 0l5.8-4.8-1.4 6.8c1.6 3.4.6 7.4-2.9 9.9-2.5 1.7-6.5 1.7-9 0-3.5-2.5-4.5-6.5-2.9-9.9Z" fill="#0B0B0C"/>
-            <circle cx="12.9" cy="16" r="1.05" fill="#fff"/><circle cx="19.1" cy="16" r="1.05" fill="#fff"/>
-          </svg>
-          <span class="nme">kat</span>
-        </div>
-        <span class="cap">dans le header</span>
-      </div>
-      <div class="spec">
-        <div class="appicon dark">
-          <svg width="36" height="36" viewBox="0 0 32 32">
-            <path d="M8.6 12.4 7.2 5.6 13 10.4c1.9-.5 4.1-.5 6 0l5.8-4.8-1.4 6.8c1.6 3.4.6 7.4-2.9 9.9-2.5 1.7-6.5 1.7-9 0-3.5-2.5-4.5-6.5-2.9-9.9Z" fill="#fff"/>
-            <circle cx="12.9" cy="16" r="1.05" fill="#0B0B0C"/><circle cx="19.1" cy="16" r="1.05" fill="#0B0B0C"/>
-          </svg>
-        </div>
-        <span class="cap">icône app (inversée)</span>
-      </div>
-    </div>
-    <p class="desc">La marque la plus lisible en tout petit, idéale comme icône d'app (fond noir, chat blanc). Très iconique, un peu plus présente visuellement.</p>
-  </div>
-
-  <!-- VARIANTE C -->
-  <div class="card">
-    <div class="head"><span class="nm">C — Doux</span><span class="tag">contour + oreilles grises</span></div>
-    <div class="specimens">
-      <div class="spec">
-        <svg width="76" height="76" viewBox="0 0 32 32" fill="none" stroke="#0B0B0C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M8.6 12.4 7.2 5.6 13 10.4Z" fill="#8A8A8E" stroke="none"/>
-          <path d="M23.4 12.4 24.8 5.6 19 10.4Z" fill="#8A8A8E" stroke="none"/>
-          <path d="M8.6 12.4 7.2 5.6 13 10.4c1.9-.5 4.1-.5 6 0l5.8-4.8-1.4 6.8c1.6 3.4.6 7.4-2.9 9.9-2.5 1.7-6.5 1.7-9 0-3.5-2.5-4.5-6.5-2.9-9.9Z"/>
-          <circle cx="12.8" cy="16.4" r=".6" fill="#0B0B0C" stroke="none"/>
-          <circle cx="19.2" cy="16.4" r=".6" fill="#0B0B0C" stroke="none"/>
-          <path d="M16 18.3v1.1"/><path d="M14.7 20.2c.8.6 1.8.6 2.6 0"/>
-        </svg>
-        <span class="cap">76 px</span>
-      </div>
-      <div class="spec">
-        <div class="chip">
-          <svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="#0B0B0C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M8.6 12.4 7.2 5.6 13 10.4Z" fill="#8A8A8E" stroke="none"/>
-            <path d="M23.4 12.4 24.8 5.6 19 10.4Z" fill="#8A8A8E" stroke="none"/>
-            <path d="M8.6 12.4 7.2 5.6 13 10.4c1.9-.5 4.1-.5 6 0l5.8-4.8-1.4 6.8c1.6 3.4.6 7.4-2.9 9.9-2.5 1.7-6.5 1.7-9 0-3.5-2.5-4.5-6.5-2.9-9.9Z"/>
-            <circle cx="12.8" cy="16.4" r=".7" fill="#0B0B0C" stroke="none"/>
-            <circle cx="19.2" cy="16.4" r=".7" fill="#0B0B0C" stroke="none"/>
-          </svg>
-          <span class="nme">kat</span>
-        </div>
-        <span class="cap">dans le header</span>
-      </div>
-      <div class="spec">
-        <div class="appicon">
-          <svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke="#0B0B0C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M8.6 12.4 7.2 5.6 13 10.4Z" fill="#8A8A8E" stroke="none"/>
-            <path d="M23.4 12.4 24.8 5.6 19 10.4Z" fill="#8A8A8E" stroke="none"/>
-            <path d="M8.6 12.4 7.2 5.6 13 10.4c1.9-.5 4.1-.5 6 0l5.8-4.8-1.4 6.8c1.6 3.4.6 7.4-2.9 9.9-2.5 1.7-6.5 1.7-9 0-3.5-2.5-4.5-6.5-2.9-9.9Z"/>
-            <circle cx="12.8" cy="16.4" r=".6" fill="#0B0B0C" stroke="none"/>
-            <circle cx="19.2" cy="16.4" r=".6" fill="#0B0B0C" stroke="none"/>
-          </svg>
-        </div>
-        <span class="cap">icône app</span>
-      </div>
-    </div>
-    <p class="desc">Compromis chaleureux : même chat, oreilles remplies en gris pour un peu plus de présence sans rompre le N&amp;B.</p>
-  </div>
-
-  <p class="foot">3 pistes — même chat, 3 traitements. Dis-moi A, B ou C (et les retouches éventuelles).</p>
+  <p class="foot">Bascule automatique selon l'heure du téléphone.</p>
 </div>
 </body>
 </html>
