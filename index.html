@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#FFFFFF">
 <title>KAT — preview DA</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <style>
   :root{
     --bg:#FFFFFF; --text:#0B0B0C; --t2:#6B6B70; --t3:#B0B0B5;
@@ -43,25 +44,25 @@
   .weekbar{display:flex; padding:6px 10px 10px; gap:2px;}
   .wday{flex:1; text-align:center; padding:6px 0; cursor:pointer; border-radius:10px;}
   .wday .dn{font-size:11px; color:var(--t3); letter-spacing:.02em; margin-bottom:4px;}
-  .wday .dd{font-size:15px; color:var(--text); width:30px;height:30px; line-height:30px; margin:0 auto; border-radius:50%;}
+  .wday .dd{font-size:15px; color:var(--text); width:30px;height:30px; line-height:30px; margin:0 auto; border-radius:50%; transition:background .15s;}
   .wday.on .dd{background:var(--ink); color:#fff; font-weight:600;}
   .wday.on .dn{color:var(--text);}
 
   /* Content */
-  .content{flex:1; overflow-y:auto; padding:4px 18px 90px;}
+  .content{flex:1; overflow-y:auto; padding:4px 18px 96px; -webkit-overflow-scrolling:touch;}
   .screen{display:none;}
   .screen.active{display:block;}
   .sectitle{font-size:13px; font-weight:600; color:var(--t2); letter-spacing:.01em; margin:22px 0 8px;}
   .daylabel{font-size:22px; font-weight:600; letter-spacing:-.02em; margin:6px 0 2px;}
+  .subtle{font-size:13px; color:var(--t2);}
 
   /* Lists */
   .row{display:flex; align-items:center; gap:12px; padding:13px 2px; border-bottom:1px solid var(--line);}
   .row:last-child{border-bottom:none;}
   .row .txt{flex:1; min-width:0; font-size:16px;}
   .row .meta{font-size:13px; color:var(--t2);}
-  .check{width:21px;height:21px;border-radius:50%;border:1.6px solid var(--t3);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .check{width:21px;height:21px;border-radius:50%;border:1.6px solid var(--t3);flex-shrink:0;display:flex;align-items:center;justify-content:center; transition:background .15s,border-color .15s;}
   .check.done{border-color:var(--ink);background:var(--ink);}
-  .row.done .txt{color:var(--t3); text-decoration:line-through; text-decoration-color:var(--t3);}
 
   /* Events (agenda) */
   .ev{display:flex; gap:12px; padding:12px 2px; border-bottom:1px solid var(--line);}
@@ -73,59 +74,100 @@
 
   /* ghost button / discreet add */
   .ghost{background:none;border:none;color:var(--text);font:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:6px 4px;opacity:.7;}
+  .ghost:active{opacity:1;}
   .addhint{display:flex;align-items:center;justify-content:center;gap:7px;color:var(--t3);font-size:13px;padding:16px 0;cursor:pointer;}
   .addhint .ico-sm{opacity:.7;}
 
-  /* Journal */
-  .moodrow{display:flex; gap:10px; justify-content:space-between; margin:6px 0 18px;}
-  .mood{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; opacity:.55; transition:opacity .15s;}
-  .mood.sel{opacity:1;}
-  .mood .face{width:34px;height:34px;}
-  .mood .lbl{font-size:10px;color:var(--t2);}
-  .mood.sel .lbl{color:var(--text);font-weight:600;}
-  .note{width:100%;min-height:200px;border:none;outline:none;background:none;font:inherit;font-size:16px;color:var(--text);resize:none;line-height:1.6;padding:6px 0;}
-  .note::placeholder{color:var(--t3);}
-  .savestate{font-size:12px;color:var(--t3);margin-top:6px;}
+  /* ===== TÂCHES — page blanche libre ===== */
+  .padhead{display:flex;align-items:center;justify-content:space-between;margin-top:8px;margin-bottom:6px;}
+  .pad{
+    outline:none; min-height:62vh; font-size:16px; line-height:1.75; color:var(--text);
+    padding:4px 0 8px; caret-color:var(--ink); -webkit-user-modify:read-write;
+  }
+  .pad:focus{outline:none;}
+  .pad > div{padding:1px 0;}
+  .pad .tt{font-size:19px; font-weight:600; letter-spacing:-.01em; margin:16px 0 4px;}
+  .pad .tt:first-child{margin-top:2px;}
+  .pad .ck{display:flex; align-items:flex-start; gap:11px;}
+  .pad .ck .tk{
+    width:21px;height:21px;border-radius:50%;border:1.6px solid var(--t3);flex-shrink:0;margin-top:4px;
+    display:inline-flex;align-items:center;justify-content:center;cursor:pointer; user-select:none;
+    transition:background .15s,border-color .15s;
+  }
+  .pad .ck .tk svg{width:12px;height:12px;stroke:#fff;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .12s;}
+  .pad .ck.done .tk{background:var(--ink);border-color:var(--ink);}
+  .pad .ck.done .tk svg{opacity:1;}
+  .pad .ck.done .ctext{color:var(--t3);text-decoration:line-through;text-decoration-color:var(--t3);}
+  .pad .ctext{flex:1;min-width:0;}
+  .pad .t-mute{color:var(--t2);}
+  .pad .t-faint{color:var(--t3);}
+  .pad-empty{color:var(--t3);}
+  .savestate{font-size:12px;color:var(--t3);margin-top:14px;display:flex;align-items:center;gap:6px;}
+  .savestate .dot{width:5px;height:5px;border-radius:50%;background:var(--t3);}
 
-  /* edit toolbar (journal) */
-  .toolbar{
-    position:sticky; bottom:0; display:flex; gap:4px; align-items:center;
-    padding:10px 6px; background:linear-gradient(to top,#fff 70%,rgba(255,255,255,0)); margin:0 -18px; padding-left:18px; padding-right:18px;
+  /* selection / report bar */
+  .selbar{display:flex;align-items:center;justify-content:space-between;padding:13px 2px;border-top:1px solid var(--line);margin-top:10px;}
+  .selbar .n{font-size:14px;color:var(--t2);}
+  .selbar .acts{display:flex;gap:8px;}
+  .btn-quiet{background:var(--ink);color:#fff;border:none;border-radius:20px;padding:9px 16px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;}
+  .btn-ghost2{background:none;border:1px solid var(--line);border-radius:20px;padding:9px 14px;font:inherit;font-size:13px;color:var(--text);cursor:pointer;}
+
+  /* format toolbar (déplacée du Journal → Tâches), discrète, au-dessus de la nav */
+  .fmtbar{
+    display:none; position:fixed; left:0; right:0; bottom:calc(env(safe-area-inset-bottom,0px) + 58px);
+    max-width:420px; margin:0 auto; align-items:stretch; gap:2px;
+    padding:6px 14px; background:rgba(255,255,255,.96); backdrop-filter:saturate(1.2) blur(8px);
     border-top:1px solid var(--line);
   }
-  .tool{flex:1; display:flex;flex-direction:column;align-items:center;gap:3px; background:none;border:none;color:var(--t2);font:inherit;font-size:10px;cursor:pointer;padding:6px 0;border-radius:8px;}
-  .tool:active{background:var(--sel);}
-  .swatches{display:flex;gap:5px;}
-  .sw{width:16px;height:16px;border-radius:50%;border:1px solid var(--line);}
+  body[data-screen="taches"] .fmtbar{display:flex;}
+  .tool{flex:1; display:flex;flex-direction:column;align-items:center;gap:3px; background:none;border:none;color:var(--t2);font:inherit;font-size:10px;cursor:pointer;padding:6px 0;border-radius:8px;transition:background .12s,color .12s;}
+  .tool:active{background:var(--sel);color:var(--text);}
+  .tool .swatches{display:flex;gap:4px;}
+  .tool .sw{width:14px;height:14px;border-radius:50%;border:1px solid var(--line);}
 
-  /* selection action bar (tâches) */
-  .selbar{display:flex;align-items:center;justify-content:space-between;padding:14px 2px;border-top:1px solid var(--line);margin-top:8px;}
-  .selbar .n{font-size:14px;color:var(--t2);}
-  .btn-quiet{background:var(--ink);color:#fff;border:none;border-radius:20px;padding:9px 18px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;}
+  /* ===== JOURNAL — ultra simple ===== */
+  .moodrow{display:flex; gap:10px; justify-content:space-between; margin:8px 0 22px;}
+  .mood{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; opacity:.5; transition:opacity .15s;}
+  .mood.sel{opacity:1;}
+  .mood .face{width:32px;height:32px;}
+  .mood .lbl{font-size:10px;color:var(--t2);}
+  .mood.sel .lbl{color:var(--text);font-weight:600;}
+  .note{width:100%;min-height:48vh;border:none;outline:none;background:none;font:inherit;font-size:16px;color:var(--text);resize:none;line-height:1.7;padding:2px 0;}
+  .note::placeholder{color:var(--t3);}
+
+  /* ===== LIEUX — vraie carte ===== */
+  .placesearch{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:12px;padding:10px 13px;margin:10px 0 12px;color:var(--t3);}
+  .placesearch input{flex:1;border:none;outline:none;background:none;font:inherit;font-size:15px;color:var(--text);}
+  .placesearch input::placeholder{color:var(--t3);}
+  #map{height:230px;width:100%;border-radius:14px;border:1px solid var(--line);overflow:hidden;background:#F2F2F2;z-index:0;}
+  .leaflet-container{font:inherit;background:#F2F2F2;}
+  .leaflet-control-attribution{font-size:9px;background:rgba(255,255,255,.7);color:var(--t3);}
+  .leaflet-popup-content{font:inherit;font-size:13px;color:var(--text);}
+  .pin svg{filter:drop-shadow(0 1px 1px rgba(0,0,0,.25));}
 
   /* Bottom nav */
   .nav{position:fixed; left:0; right:0; bottom:0; max-width:420px; margin:0 auto;
     display:flex; background:rgba(255,255,255,.92); backdrop-filter:saturate(1.2) blur(8px);
-    border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom,0);}
+    border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom,0); z-index:500;}
   .tab{flex:1; background:none;border:none; display:flex;flex-direction:column;align-items:center;gap:3px;
-    padding:9px 0 8px; color:var(--t3); cursor:pointer; font:inherit;}
+    padding:9px 0 8px; color:var(--t3); cursor:pointer; font:inherit; min-height:44px; transition:color .15s;}
   .tab .lbl{font-size:10px; letter-spacing:.01em;}
   .tab.on{color:var(--text);}
   .note-card{color:var(--t2);font-size:13px;background:var(--sel);border-radius:var(--r);padding:12px 14px;margin:14px 0;}
+
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;}}
 </style>
 </head>
-<body>
+<body data-screen="agenda">
 <div class="phone">
   <header>
     <div class="brand">
-      <!-- logo chat line-art (piste 1) -->
-      <svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="#0B0B0C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="KAT">
-        <path d="M9 6 L11.5 12.5"/><path d="M23 6 L20.5 12.5"/>
-        <path d="M16 10c-5 0-8.5 3.6-8.5 8.2 0 4.2 3.7 7.3 8.5 7.3s8.5-3.1 8.5-7.3C24.5 13.6 21 10 16 10Z"/>
-        <circle cx="12.6" cy="17.5" r=".6" fill="#0B0B0C" stroke="none"/>
-        <circle cx="19.4" cy="17.5" r=".6" fill="#0B0B0C" stroke="none"/>
-        <path d="M16 19.4v1.2"/><path d="M14.7 21.4c.7.6 1.6.6 2.3 0"/>
-        <path d="M16.8 20.2 21 18.8"/><path d="M15.2 20.2 11 18.8"/>
+      <!-- logo chat — variante A (trait), modifiable -->
+      <svg width="27" height="27" viewBox="0 0 32 32" fill="none" stroke="#0B0B0C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-label="KAT">
+        <path d="M8.6 12.4 7.2 5.6 13 10.4c1.9-.5 4.1-.5 6 0l5.8-4.8-1.4 6.8c1.6 3.4.6 7.4-2.9 9.9-2.5 1.7-6.5 1.7-9 0-3.5-2.5-4.5-6.5-2.9-9.9Z"/>
+        <circle cx="12.8" cy="16.2" r=".7" fill="#0B0B0C" stroke="none"/>
+        <circle cx="19.2" cy="16.2" r=".7" fill="#0B0B0C" stroke="none"/>
+        <path d="M16 18.1v1.1"/><path d="M14.7 20c.8.6 1.8.6 2.6 0"/>
       </svg>
       <span class="name">kat</span>
     </div>
@@ -138,7 +180,7 @@
   <!-- WEEK BAR -->
   <div class="weekbar" id="weekbar"></div>
 
-  <div class="content">
+  <div class="content" id="content">
 
     <!-- ===== AGENDA ===== -->
     <section class="screen active" data-screen="agenda">
@@ -155,41 +197,41 @@
       <div class="row"><div class="check"></div><div class="txt">Réserver le restaurant</div></div>
     </section>
 
-    <!-- ===== TÂCHES ===== -->
+    <!-- ===== TÂCHES — page blanche libre ===== -->
     <section class="screen" data-screen="taches">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
-        <div>
-          <div class="daylabel" style="font-size:20px">Tâches</div>
-          <div class="meta" style="color:var(--t2)">Vendredi 27 juin · 1/3</div>
-        </div>
+      <div class="padhead">
+        <div class="subtle">Vendredi 27 juin</div>
         <button class="ghost" onclick="toggleSel()" id="selbtn">Sélectionner</button>
       </div>
 
-      <div id="tasklist">
-        <div class="row"><div class="check done"><svg class="ico-sm" viewBox="0 0 24 24" style="width:13px;height:13px;stroke:#fff"><path d="M5 12l4 4 10-10"/></svg></div><div class="txt" style="color:var(--t3);text-decoration:line-through">Appeler le médecin</div></div>
-        <div class="row"><div class="check"></div><div class="txt">Acheter du pain</div></div>
-        <div class="row"><div class="check"></div><div class="txt">Réserver le restaurant</div></div>
+      <div class="pad" id="pad" contenteditable="true" spellcheck="false">
+        <div class="tt">À faire aujourd'hui</div>
+        <div class="ck done"><span class="tk" contenteditable="false"><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg></span><span class="ctext">Appeler le médecin</span></div>
+        <div class="ck"><span class="tk" contenteditable="false"><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg></span><span class="ctext">Acheter du pain</span></div>
+        <div class="ck"><span class="tk" contenteditable="false"><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg></span><span class="ctext">Réserver le restaurant</span></div>
+        <div><br></div>
+        <div class="t-mute">Idée cadeau pour maman : un carnet et un joli stylo.</div>
+        <div><br></div>
       </div>
 
-      <div class="note-card" id="selhint" style="display:none">Mode sélection : coche des tâches puis « Reporter à… » pour les déplacer vers un autre jour.</div>
-      <div class="selbar" id="selbar" style="display:none"><span class="n">2 sélectionnées</span><button class="btn-quiet">Reporter à…</button></div>
+      <div class="savestate" id="savestate"><span class="dot"></span> Enregistré</div>
 
-      <div class="addhint"><svg class="ico-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Ajouter une tâche</div>
+      <!-- barre report (déplacement de tâches vers un autre jour) -->
+      <div class="selbar" id="selbar" style="display:none">
+        <span class="n" id="selcount">Coche des tâches à déplacer</span>
+        <div class="acts">
+          <button class="btn-ghost2">Demain</button>
+          <button class="btn-quiet">Reporter à…</button>
+        </div>
+      </div>
     </section>
 
-    <!-- ===== JOURNAL ===== -->
+    <!-- ===== JOURNAL — ultra simple ===== -->
     <section class="screen" data-screen="journal">
       <div class="daylabel" style="margin-top:10px">Humeur du jour</div>
       <div class="moodrow" id="moodrow"></div>
       <textarea class="note" placeholder="Écris ici…">Belle journée, calme. J'ai pris le temps de marcher.</textarea>
-      <div class="savestate">Enregistré</div>
-
-      <div class="toolbar">
-        <button class="tool"><svg class="ico-sm" viewBox="0 0 24 24"><path d="M5 6h14M9 6v13"/></svg>Titre</button>
-        <button class="tool"><svg class="ico-sm" viewBox="0 0 24 24"><rect x="4" y="5" width="5" height="5" rx="1"/><path d="M12 7h8"/><rect x="4" y="14" width="5" height="5" rx="1"/><path d="M12 16h8"/></svg>Liste</button>
-        <button class="tool"><svg class="ico-sm" viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7zM7 12h7a3.5 3.5 0 0 1 0 7H7z"/></svg>Gras</button>
-        <button class="tool"><span class="swatches"><span class="sw" style="background:#111"></span><span class="sw" style="background:#8a8a8e"></span><span class="sw" style="background:#d4d4d6"></span></span>Ton</button>
-      </div>
+      <div class="savestate"><span class="dot"></span> Enregistré</div>
     </section>
 
     <!-- ===== COURSES ===== -->
@@ -205,14 +247,29 @@
       <div class="addhint"><svg class="ico-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Ajouter un article</div>
     </section>
 
-    <!-- ===== LIEUX ===== -->
+    <!-- ===== LIEUX — vraie carte ===== -->
     <section class="screen" data-screen="lieux">
       <div class="daylabel" style="font-size:20px;margin-top:8px">Lieux</div>
-      <div class="row"><svg class="ico-sm" viewBox="0 0 24 24" style="opacity:.6"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg><div class="txt">Le Petit Café <div class="meta">Brunch · 5e</div></div></div>
-      <div class="row"><svg class="ico-sm" viewBox="0 0 24 24" style="opacity:.6"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg><div class="txt">Librairie Mollat <div class="meta">À tester</div></div></div>
-      <div class="row"><svg class="ico-sm" viewBox="0 0 24 24" style="opacity:.6"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg><div class="txt">Plage du Moulleau <div class="meta">Bord de mer</div></div></div>
+      <div class="placesearch">
+        <svg class="ico-sm" viewBox="0 0 24 24" style="opacity:.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" placeholder="Rechercher une adresse…" aria-label="Rechercher une adresse">
+      </div>
+      <div id="map"></div>
+      <div style="margin-top:14px">
+        <div class="row"><svg class="ico-sm" viewBox="0 0 24 24" style="opacity:.6"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg><div class="txt">Le Petit Café <div class="meta">Brunch · centre-ville</div></div></div>
+        <div class="row"><svg class="ico-sm" viewBox="0 0 24 24" style="opacity:.6"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg><div class="txt">Librairie <div class="meta">À tester</div></div></div>
+        <div class="row"><svg class="ico-sm" viewBox="0 0 24 24" style="opacity:.6"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg><div class="txt">Plage <div class="meta">Bord de mer</div></div></div>
+      </div>
     </section>
 
+  </div>
+
+  <!-- FORMAT TOOLBAR (Tâches) — déplacée depuis le Journal -->
+  <div class="fmtbar" id="fmtbar">
+    <button class="tool" onclick="fmtTitle()"><svg class="ico-sm" viewBox="0 0 24 24"><path d="M5 6h14M9 6v13"/></svg>Titre</button>
+    <button class="tool" onclick="fmtList()"><svg class="ico-sm" viewBox="0 0 24 24"><circle cx="5.5" cy="7" r="1.8"/><path d="M10 7h9"/><circle cx="5.5" cy="16.5" r="1.8"/><path d="M10 16.5h9"/></svg>Checklist</button>
+    <button class="tool" onclick="fmtBold()"><svg class="ico-sm" viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7zM7 12h7a3.5 3.5 0 0 1 0 7H7z"/></svg>Gras</button>
+    <button class="tool" onclick="fmtTone()"><span class="swatches"><span class="sw" style="background:#111"></span><span class="sw" style="background:#8a8a8e"></span><span class="sw" style="background:#d4d4d6"></span></span>Ton</button>
   </div>
 
   <!-- BOTTOM NAV -->
@@ -225,14 +282,15 @@
   </nav>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
-  // Barre semaine
+  // ---------- Barre semaine ----------
   const days=[['L',23],['M',24],['M',25],['J',26],['V',27],['S',28],['D',29]];
   document.getElementById('weekbar').innerHTML=days.map((d,i)=>
     `<div class="wday${i===4?' on':''}" onclick="pickDay(this)"><div class="dn">${d[0]}</div><div class="dd">${d[1]}</div></div>`).join('');
   function pickDay(el){document.querySelectorAll('.wday').forEach(w=>w.classList.remove('on'));el.classList.add('on');}
 
-  // Mini-visages line (humeurs)
+  // ---------- Humeurs (line-art, pas d'emoji) ----------
   const moods=[
     {l:'Rayonnante',d:'M8 15c1.2 1.6 2.6 2.4 4 2.4s2.8-.8 4-2.4'},
     {l:'Contente',d:'M8.5 14.5c1 1.1 2.2 1.6 3.5 1.6s2.5-.5 3.5-1.6'},
@@ -247,24 +305,91 @@
        </svg><div class="lbl">${m.l}</div></div>`).join('');
   function pickMood(el){document.querySelectorAll('.mood').forEach(m=>m.classList.remove('sel'));el.classList.add('sel');}
 
-  // Nav écrans
-  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
-    t.classList.add('on');
-    const id=t.dataset.go;
+  // ---------- Navigation écrans ----------
+  let mapReady=false;
+  function goTo(id){
+    if(!document.querySelector(`.tab[data-go="${id}"]`)) id='agenda';
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.dataset.go===id));
+    document.body.dataset.screen=id;
     document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===id));
-    document.querySelector('.content').scrollTop=0;
+    document.getElementById('content').scrollTop=0;
     document.getElementById('weekbar').style.display=(id==='agenda'||id==='taches')?'flex':'none';
-  }));
-
-  // Mode sélection (démo)
-  let sel=false;
-  function toggleSel(){
-    sel=!sel;
-    document.getElementById('selbtn').textContent=sel?'Annuler':'Sélectionner';
-    document.getElementById('selhint').style.display=sel?'block':'none';
-    document.getElementById('selbar').style.display=sel?'flex':'none';
+    if(id!=='taches'){ exitSel(); }
+    if(id==='lieux'){ initMap(); }
   }
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>goTo(t.dataset.go)));
+
+  // ---------- TÂCHES : page blanche éditable ----------
+  const pad=document.getElementById('pad');
+
+  // cocher / décocher
+  pad.addEventListener('click',e=>{
+    const tk=e.target.closest('.tk');
+    if(tk){ tk.parentElement.classList.toggle('done'); markSaving(); }
+  });
+  pad.addEventListener('input',markSaving);
+
+  function curBlock(){
+    const sel=window.getSelection(); if(!sel.rangeCount) return null;
+    let n=sel.anchorNode; if(n && n.nodeType===3) n=n.parentNode;
+    while(n && n.parentNode && n.parentNode!==pad) n=n.parentNode;
+    return (n && n.parentNode===pad)? n : null;
+  }
+  function placeCaret(node,atEnd){
+    const r=document.createRange(), s=window.getSelection();
+    r.selectNodeContents(node); r.collapse(!atEnd); s.removeAllRanges(); s.addRange(r);
+  }
+  function fmtBold(){ pad.focus(); document.execCommand('bold'); markSaving(); }
+  function fmtTitle(){ const b=curBlock(); if(!b){pad.focus();return;} b.classList.remove('ck','t-mute','t-faint'); b.classList.toggle('tt'); markSaving(); }
+  function fmtList(){
+    pad.focus();
+    const b=curBlock();
+    const d=document.createElement('div');
+    d.className='ck';
+    d.innerHTML='<span class="tk" contenteditable="false"><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg></span><span class="ctext">Nouvelle tâche</span>';
+    if(b){ b.after(d); } else { pad.appendChild(d); }
+    const tx=d.querySelector('.ctext'); placeCaret(tx,true);
+    markSaving();
+  }
+  const tones=['','t-mute','t-faint'];
+  function fmtTone(){ const b=curBlock(); if(!b){pad.focus();return;} let i=tones.indexOf(b.dataset.tone||''); i=(i+1)%tones.length; tones.forEach(t=>t&&b.classList.remove(t)); b.dataset.tone=tones[i]; if(tones[i]) b.classList.add(tones[i]); markSaving(); }
+
+  // indicateur de sauvegarde (fiabilité)
+  const saveEl=document.getElementById('savestate');
+  let saveT=null;
+  function markSaving(){
+    saveEl.innerHTML='<span class="dot"></span> Enregistrement…';
+    clearTimeout(saveT);
+    saveT=setTimeout(()=>{ saveEl.innerHTML='<span class="dot"></span> Enregistré'; },650);
+  }
+
+  // ---------- Sélection / report de tâches ----------
+  let sel=false;
+  function toggleSel(){ sel?exitSel():enterSel(); }
+  function enterSel(){ sel=true; document.getElementById('selbtn').textContent='Terminé'; document.getElementById('selbar').style.display='flex'; }
+  function exitSel(){ sel=false; const b=document.getElementById('selbtn'); if(b) b.textContent='Sélectionner'; const sb=document.getElementById('selbar'); if(sb) sb.style.display='none'; }
+
+  // ---------- LIEUX : carte Leaflet (CARTO Positron, sans clé API) ----------
+  let map=null;
+  function initMap(){
+    if(typeof L==='undefined'){ return; }
+    if(map){ setTimeout(()=>map.invalidateSize(),50); return; }
+    map=L.map('map',{zoomControl:false,attributionControl:true}).setView([43.5513,7.0128],14);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+      {maxZoom:19, subdomains:'abcd', attribution:'© OpenStreetMap · © CARTO'}).addTo(map);
+    const pin=L.divIcon({className:'pin',iconSize:[26,30],iconAnchor:[13,28],popupAnchor:[0,-26],
+      html:'<svg width="26" height="30" viewBox="0 0 24 24" fill="#0B0B0C" stroke="#fff" stroke-width="1.2"><path d="M12 22s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="11" r="2.4" fill="#fff" stroke="none"/></svg>'});
+    const places=[[43.5505,7.0170,'Le Petit Café'],[43.5532,7.0092,'Librairie'],[43.5486,7.0205,'Plage']];
+    places.forEach(p=>L.marker([p[0],p[1]],{icon:pin}).addTo(map).bindPopup(p[2]));
+    mapReady=true;
+    setTimeout(()=>map.invalidateSize(),80);
+  }
+  window.addEventListener('resize',()=>{ if(map) map.invalidateSize(); });
+
+  // ---------- Deep-link par hash (#taches, #journal, #lieux…) ----------
+  // placé en fin de script : toutes les déclarations (map, initMap) existent désormais.
+  if(location.hash) goTo(location.hash.slice(1));
+  window.addEventListener('hashchange',()=>goTo(location.hash.slice(1)));
 </script>
 </body>
 </html>
